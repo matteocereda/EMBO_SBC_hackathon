@@ -1,7 +1,7 @@
 ![SPC](www/SPC.png)
 
-# EMBO_hackathon
-Codes for EMBO Hackathon "The Spatial Biology of Cancer"
+# Introduction
+This repository contains codes and information needed to enjoy the Hackathon of the EMBO "The Spatial Biology of Cancer" workshop.
 
 On the first day of the workshop, we will run a Hackathon that will allow you to get familiar with the analysis of various type of spatial data as well as will be a nice icebreaker to know other participants. 
 
