@@ -1,3 +1,5 @@
+![SPC](www/SPC.png)
+
 EMBO_hackathon
 Codes for EMBO Hackathon "The Spatial Biology of Cancer"
 
