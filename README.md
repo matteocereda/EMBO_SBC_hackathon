@@ -19,6 +19,6 @@ We will assign you in virtual rooms. Details will be given in due course
 
 # Contributors
 
-- *Main Developers* : Mariachiara Grieco, Pietro Antei
-- *Developers*: Federica Schieppati, Alessia Avon
+- *Main Developers* : Mariachiara Grieco, Pietro Andrei
+- *Developers*: Alessia Avon, Federica Schieppati
 - *Supervisors*: Matteo Cereda, Maria Secrier, and Francesca Ciccarelli
