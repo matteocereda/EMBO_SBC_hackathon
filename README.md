@@ -22,3 +22,5 @@ We will assign you in virtual rooms. Details will be given in due course
 - *Main Developers* : Mariachiara Grieco, Pietro Andrei
 - *Developers*: Alessia Avon, Federica Schieppati
 - *Supervisors*: Matteo Cereda, Maria Secrier, and Francesca Ciccarelli
+
+Contact: mariachiara.grieco@unimi.it 
