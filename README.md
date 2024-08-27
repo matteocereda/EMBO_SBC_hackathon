@@ -1,21 +1,44 @@
 ![SPC](www/SPC.png)
 
-# Introduction
-This repository contains codes and information needed to enjoy the Hackathon of the EMBO "The Spatial Biology of Cancer" workshop.
+Wellcome to the EMBO "The Spatial Biology of Cancer" workshop repository containing codes and information needed to enjoy our Hackathon.
 
-On the first day of the workshop, we will run a Hackathon that will allow you to get familiar with the analysis of various type of spatial data as well as will be a nice icebreaker to know other participants. 
+# Useful information to get ready for the Hackathon
 
-The Hackathon is divided into two levels and detailed information will be given on the day. Please bring your own laptop because no computers will be provided on site. The Hackathon is based on R programming language. Required packages will be provided in the 00_depencencies.html file. Please note that all packages must be already up and running on your machine before the Hackathon starts. 
+•	The Hackathon is based on R programming language. Please make sure to use ``R`` version ≥4.4.0.
 
-To aid the formation of groups, at the registration desk you will be asked to choose a coloured dot sticker that best represents your background:
-- Green = biologist
-- Yellow = bioinformatician
-- Blue = quantitative scientist (mathematician; physicist; statistician; etc) 
-- Red = clinical scientist
+•	Please download all the needed packages and datasets on your machine prior to the workshop start. 
+  -  Required packages are listed in the ``00_depencencies.html`` file
+  -  Required datasets are in the ``input`` folder
+  Data are already available for download, and we suggest you get everything on your machine asap.
+
+•	The hackathon is divided into two independent Levels. We aim to discuss the results of Level 1 after around 1,5 hours, while results of Level 2 will be discussed at the end.
+
+•	There will be people to assist you although you should have all the needed expertise within your groups already.
+
+•	There will be questions associated to the two Levels and each group (see formation of groups below) will be asked to send an email (one per group) with the answers to the organisers, maximum by 2nd of September, noon. The best group will be revealed at the end of the workshop.
+
+# On site participants
+
+•	At the registration desk please choose a coloured dot sticker that best represents your background:
+  -  Green : biologist
+  -  Yellow : bioinformatician
+  -  Blue : quantitative scientist (mathematician; physicist; statistician; *etc.*)
+  -  Red : clinical scientist
 
 Place your sticker on the conference badge and find other 8 or 9 people (each group will be formed of 9 or 10 people) with diverse background. The more diverse and colour-balanced the group is, the better.
-For virtual participants.
-We will assign you in virtual rooms. Details will be given in due course
+
+•	``Groups need to be formed before the Hackathon starts``. Pick a nickname and a representative of the group. The team representative will be in charge of sending the answers to the organisers.
+
+•	Please ``bring your own, fully charged, laptop`` because no computers will be provided on site and not many power plugs will be available.
+
+# Virtual participants
+
+We will assign you randomly in virtual rooms, each with about 10 participants. Please nominate a team representative, who will be in charge of sending the answers to the organisers.
+
+•	Hackathon will follow the same rules as for on-site participants
+
+•	There will be an assistant for helping you online
+
 
 # Contributors
 
