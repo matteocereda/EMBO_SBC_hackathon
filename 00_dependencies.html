@@ -1974,6 +1974,20 @@ if(length(not_installed)&gt;0){
 }</code></pre>
 </div>
 </div>
+<div id="final-check" class="section level1">
+<h1>Final check</h1>
+<p>Finally, check installation process has been completed
+successfully:</p>
+<pre class="r"><code>all_required_pkgs = c(all_pkgs, github_pkgs)
+lib = installed.packages()
+installed = all_required_pkgs %in% rownames(lib)
+not_installed = which(!installed)
+
+message(length(not_installed) , &#39; packages are not yet installed&#39;)</code></pre>
+<pre><code>## 0 packages are not yet installed</code></pre>
+<pre class="r"><code>message(length(installed) , &#39; out of &#39;, length(all_required_pkgs), &#39; required packages are installed&#39; )</code></pre>
+<pre><code>## 39 out of 39 required packages are installed</code></pre>
+</div>
 
 
 
