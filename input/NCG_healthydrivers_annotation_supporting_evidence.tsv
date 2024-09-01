@@ -1,0 +1,168 @@
+entrez	symbol	pubmed_id	type	organ_system	organ_site	tissue_type	method
+92	ACVR2A	31645727	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	normal_hepatocytes_and_cirrhotic_hepatocytes	dN/dS
+207	AKT1	31187483	"Gene Panel"	Gynecologic	endometrium	normal_endometrium	Paper-specific
+213	ALB	31645727	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	normal_hepatocytes_and_cirrhotic_hepatocytes	dN/dS
+213	ALB	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+338	APOB	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+387	RHOA	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+463	ZFHX3	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+595	CCND1	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+673	BRAF	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+677	ZFP36L1	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+678	ZFP36L2	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+688	KLF5	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+867	CBL	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+867	CBL	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+1006	CDH8	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+1026	CDKN1A	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+1029	CDKN2A	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+1106	CHD2	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+1108	CHD4	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+1387	CREBBP	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+1499	CTNNB1	30428062	"Gene Panel"	Gynecologic	endometrium	endometriotic_endometrium	Paper-specific
+1654	DDX3X	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+1788	DNMT3A	25426838	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+1788	DNMT3A	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+1788	DNMT3A	25326804	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+1834	DSPP	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+1999	ELF3	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+2033	EP300	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+2064	ERBB2	30428062	"Gene Panel"	Gynecologic	endometrium	endometriotic_endometrium	Paper-specific
+2064	ERBB2	31187483	"Gene Panel"	Gynecologic	endometrium	normal_endometrium	Paper-specific
+2064	ERBB2	31645730	"WGS-Gene Panel"	"Core gastrointestinal"	colon	normal_colorectal_epithelium	dNdScv
+2064	ERBB2	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+2065	ERBB3	31645730	"WGS-Gene Panel"	"Core gastrointestinal"	colon	normal_colorectal_epithelium	dNdScv
+2065	ERBB3	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+2068	ERCC2	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+2195	FAT1	25999502	"Gene Panel"	Skin	skin	normal_eyelid_epidermis	dN/dS
+2195	FAT1	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+2195	FAT1	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+2195	FAT1	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+2195	FAT1	31996850	WGS	Thoracic	lung	normal_bronchial_epithelium	dNdScv
+2201	FBN2	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+2263	FGFR2	31187483	"Gene Panel"	Gynecologic	endometrium	normal_endometrium	Paper-specific
+2263	FGFR2	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+2778	GNAS	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+2778	GNAS	25326804	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+2782	GNB1	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+2909	ARHGAP35	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+2909	ARHGAP35	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+3170	FOXA2	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+3717	JAK2	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+3717	JAK2	25326804	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+3845	KRAS	28489996	"WES-Gene Panel"	Gynecologic	endometrium	endometriotic_endometrium	Paper-specific
+3845	KRAS	30428062	"Gene Panel"	Gynecologic	endometrium	endometriotic_endometrium	Paper-specific
+3845	KRAS	31187483	"Gene Panel"	Gynecologic	endometrium	normal_endometrium	Paper-specific
+3845	KRAS	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+3845	KRAS	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+4288	MKI67	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+4763	NF1	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+4763	NF1	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+4780	NFE2L2	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+4851	NOTCH1	25999502	"Gene Panel"	Skin	skin	normal_eyelid_epidermis	dN/dS
+4851	NOTCH1	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+4851	NOTCH1	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+4851	NOTCH1	31996850	WGS	Thoracic	lung	normal_bronchial_epithelium	dNdScv
+4853	NOTCH2	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+4853	NOTCH2	25999502	"Gene Panel"	Skin	skin	normal_eyelid_epidermis	dN/dS
+4853	NOTCH2	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+4853	NOTCH2	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+4854	NOTCH3	25999502	"Gene Panel"	Skin	skin	normal_eyelid_epidermis	dN/dS
+4854	NOTCH3	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+4854	NOTCH3	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+4893	NRAS	31187483	"Gene Panel"	Gynecologic	endometrium	normal_endometrium	Paper-specific
+4893	NRAS	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+5083	PAX9	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+5284	PIGR	32697969	WGS	"Core gastrointestinal"	colon	"colonic_epithelial_crypts_from_ibd _patients"	dNdScv
+5290	PIK3CA	28489996	"WES-Gene Panel"	Gynecologic	endometrium	endometriotic_endometrium	Paper-specific
+5290	PIK3CA	30428062	"Gene Panel"	Gynecologic	endometrium	endometriotic_endometrium	Paper-specific
+5290	PIK3CA	31187483	"Gene Panel"	Gynecologic	endometrium	normal_endometrium	Paper-specific
+5290	PIK3CA	31645730	"WGS-Gene Panel"	"Core gastrointestinal"	colon	normal_colorectal_epithelium	dNdScv
+5290	PIK3CA	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+5290	PIK3CA	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+5290	PIK3CA	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+5290	PIK3CA	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+5295	PIK3R1	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+5295	PIK3R1	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+5310	PKD1	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+5314	PKHD1	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+5426	POLE	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+5518	PPP2R1A	28489996	"WES-Gene Panel"	Gynecologic	endometrium	endometriotic_endometrium	Paper-specific
+5518	PPP2R1A	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+5537	PPP6C	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+5604	MAP2K1	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+5728	PTEN	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+5728	PTEN	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+5728	PTEN	31996850	WGS	Thoracic	lung	normal_bronchial_epithelium	dNdScv
+5922	RASA2	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+6427	SRSF2	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+6872	TAF1	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+7157	TP53	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+7157	TP53	25999502	"Gene Panel"	Skin	skin	normal_eyelid_epidermis	dN/dS
+7157	TP53	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+7157	TP53	25326804	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+7157	TP53	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+7157	TP53	31996850	WGS	Thoracic	lung	normal_bronchial_epithelium	dNdScv
+7157	TP53	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+7403	KDM6A	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+7840	ALMS1	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+8085	KMT2D	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+8085	KMT2D	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+8085	KMT2D	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+8241	RBM10	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+8241	RBM10	25999502	"Gene Panel"	Skin	skin	normal_eyelid_epidermis	dN/dS
+8289	ARID1A	28489996	"WES-Gene Panel"	Gynecologic	endometrium	endometriotic_endometrium	Paper-specific
+8289	ARID1A	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+8289	ARID1A	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+8289	ARID1A	32697969	WGS	"Core gastrointestinal"	colon	"colonic_epithelial_crypts_from_ibd _patients"	dNdScv
+8289	ARID1A	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+8289	ARID1A	31996850	WGS	Thoracic	lung	normal_bronchial_epithelium	dNdScv
+8289	ARID1A	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+8313	AXIN2	31645730	"WGS-Gene Panel"	"Core gastrointestinal"	colon	normal_colorectal_epithelium	dNdScv
+8405	SPOP	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+8452	CUL3	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+8493	PPM1D	25426838	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+8493	PPM1D	25326804	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+8493	PPM1D	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+8626	TP63	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+10290	SPEG	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+10672	GNA13	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+10735	STAG2	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+10735	STAG2	31645730	"WGS-Gene Panel"	"Core gastrointestinal"	colon	normal_colorectal_epithelium	dNdScv
+11200	CHEK2	30602793	"WES-Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	"MutSigCV, dNdScv"
+11200	CHEK2	31996850	WGS	Thoracic	lung	normal_bronchial_epithelium	dNdScv
+23332	CLASP1	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+23451	SF3B1	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+23451	SF3B1	25326804	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+23512	SUZ12	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+23654	PLXNB2	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+26053	AUTS2	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+54790	TET2	25426838	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+54790	TET2	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+54790	TET2	25326804	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+55127	HEATR1	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+55294	FBXW7	31645730	"WGS-Gene Panel"	"Core gastrointestinal"	colon	normal_colorectal_epithelium	dNdScv
+55294	FBXW7	32350471	WGS	Gynecologic	endometrium	normal_endometrium	dN/dS
+55294	FBXW7	32697969	WGS	"Core gastrointestinal"	colon	"colonic_epithelial_crypts_from_ibd _patients"	dNdScv
+55294	FBXW7	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+55911	APOBR	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+57519	STARD9	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+57634	EP400	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+60676	PAPPA2	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+63035	BCORL1	25326804	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+80149	ZC3H12A	32697969	WGS	"Core gastrointestinal"	colon	"colonic_epithelial_crypts_from_ibd _patients"	dNdScv
+84962	AJUBA	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+85302	FBF1	31645727	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	normal_hepatocytes_and_cirrhotic_hepatocytes	dN/dS
+85302	FBF1	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+91156	IGFN1	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+93953	GCNA	30110635	"WES-Gene Panel"	Gynecologic	endometrium	normal_endometrium_and_endometriotic_endometrium	Recurrence-based
+94234	FOXQ1	33004514	"WGS-WES-Gene Panel"	Urologic	bladder	normal_bladder_urothelium	dNdScv
+133522	PPARGC1B	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+169044	COL22A1	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
+171023	ASXL1	25426838	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+171023	ASXL1	25426837	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+171023	ASXL1	25326804	WES	"Hematologic and lymphatic"	blood	normal_blood_cells	Recurrence-based
+196528	ARID2	30337457	"Gene Panel"	"Core gastrointestinal"	esophagus	normal_oesophageal_epithelium	dNdScv
+196528	ARID2	33029006	"Gene Panel"	Skin	skin	normal_melanocytes	Paper-specific
+196528	ARID2	31996850	WGS	Thoracic	lung	normal_bronchial_epithelium	dNdScv
+196528	ARID2	30955891	"WES-Gene Panel"	"Developmental gastrointestinal"	hepatobiliary	non-dysplastic_hepatocytes_from_diseased_liver	Recurrence-based
