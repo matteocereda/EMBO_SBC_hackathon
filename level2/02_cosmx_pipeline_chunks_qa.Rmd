@@ -1,0 +1,1377 @@
+---
+title: "Hackathon Level 2"
+output: 
+  html_document:
+    code_folding: show
+    toc: true
+    toc_float: true
+    toc_depth: 2
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{=html}
+<style type="text/css">
+  body{
+  font-size: 12pt;
+}
+</style>
+```
+
+```{r, include=FALSE}
+knitr::opts_chunk$set( eval = TRUE, echo= TRUE, message = FALSE, warning = FALSE, highlight = TRUE)
+```
+
+# Introduction
+
+We will analyse NanoString CosMx Spatial Molecular Imaging data from a tissue slide of **high-grade serous ovarian carcinoma** (HGSOC).\
+
+Ovarian cancer remains the eighth leading cause of cancer deaths in women worldwide and HGSOC is the most common and lethal histologic subtype. \
+
+Genomes of HGSOC are **highly heterogeneous** with most alterations only found in a small fraction of tumours. \
+Also, due to a high degree of **chromosomal instability**, most HGSOCs are polyclonal. As the cancer progresses and metastasises, **clonal diversity** increases, which is associated with **worse prognosis** and development of **chemoresistance**. \
+
+Standard first-line treatment for HGSOC typically consists of debulking surgery, which involves removal of as much of the tumor as possible, followed by intravenous paclitaxel/platinum-based chemotherapy, and often subsequent maintenance therapy.\ 
+
+Investigating tumor heterogeneity, The Cancer Genome Atlas (TCGA) project revealed **four molecular subtypes** of HGSOC based on bulk expression measurements: mesenchymal, proliferative, immunoreactive, and differentiated. These subtypes are associated with differences in prognosis. \
+It is now generally accepted that transcriptional subtypes of HGSOC largely reflect the **degree of immune cell infiltration and the abundance of fibroblasts**, rather than inherent differences in tumour cells. \
+To determine how these non-malignant cell types might influence tumour growth and prognosis, ST data hold the potential to reconstruct ligand-receptor interactions between stromal, immune and tumour cell populations, resolving the tumor tissue architecture at spatial resolution. \
+
+
+In this hackathon we will analyze data of tumour sample collected during interval debulking surgery from HGSOC patient with a good response to taxane- and platinum-based neoadjuvant chemotherapy (NACT) treatment.
+
+Data were retrieved from [Denisenko, E. et al., Spatial transcriptomics reveals discrete tumour microenvironments and autocrine loops within ovarian cancer subclones. Nat Commun. (2024)](https://doi.org/10.1038/s41467-024-47271-y)
+
+
+```{=html}
+  <hr>
+```
+
+
+# Warming up: setting the environment that you need
+
+Before starting, let's set the stage to be all on the same ground.\
+You have been provided with configuration files. Please select "your"
+environment and the "helper" functions.
+
+```{r, setting_envir, message=TRUE, highlight=TRUE}
+source('../00_environment.R')
+source("../00_helper_functions.R")
+```
+
+```{=html}
+  <hr>
+```
+
+
+# Loading the packages you need
+
+```{r libraries , message=FALSE}
+source("level_2_libraries.R")
+```
+
+```{=html}
+  <hr>
+```
+
+
+# Loading CosMx data of HGSOC slide {.tabset .tabset-fade .tabset-pills}
+
+To create the `SeuratObject` representing the ST data of the sequenced slide we will rely 
+on information stored in the `CosMx` folder in **input**. 
+This folder contains:
+
+-   **gene expression matrix:** \
+    cell (rows) X genes (columns) transcript count matrix.\
+    CosMx count matrix also includes **negative probes**, which can be used to estimate signal-to-noise ratio in the resulting transcript
+    quantification;\
+
+-   **polygon file:** list of x/y point coordinates that can be used to
+    reconstruct the single cell boundaries.\
+    This file will not be used in this level, but it is generally useful
+    for visualization purposes and if you want to estimate cell-to-cell
+    distances in a more precise way (i.e., membrane-to-membrane
+    distance);\
+
+-   **single cell metadata table:**\
+    By default, the CosMx metadata will always include:\
+    -   the cell id;
+    -   the field of view (FOV) where the cell was originally found;
+    -   the x/y coordinates of each single cell centroid;
+    -   the area of the segmented single cells;
+    -   the mean staining intensity of each immunofluorescence marker
+        included in the CosMx staining panel, usually nuclear and
+        membrane staining plus extra optional markers for more specific
+        cell type identification.\
+        
+        
+        
+| What                       | Path to                          |
+|----------------------------|----------------------------------|
+| gene expression matrix     | `../input/CosMx/exprMat_file.csv`  |
+| polygon file               | `../input/CosMx/polygons.csv`      |
+| single cell metadata table | `../input/CosMx/metadata_file.csv` |
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## Question {.unnumbered}
+
+Given paths reported in the table above, load CosMx data into a
+`SeuratObject`.\
+A `SeuratObject` is a specialized data structure developed in the
+[`Seurat R package `](https://satijalab.org/seurat/), enabling the study
+of gene expression in the context of tissue architecture.\
+This `SeuratObject` is a container that organizes and stores both the
+cell-level expression data and the associated image of the tissue slide.\
+
+
+Create a `SeuratObject` containing cell-level gene expression counts
+and the image of the tissue slide; in order:
+
+1.  Load gene expression count matrix.\
+
+    -   The CosMx gene expression matrix comes in a dense csv format.\
+        We recommend using the `read_csv_arrow()` function from the
+        `arrow` package to speed up loading the csv file into R.
+
+    -   Be sure that the cell identifiers across the different files
+        follow the same format.\
+        In our case, create a new cell identifier by merging the numeric
+        identifier of each single cell `cell_ID` with the numeric
+        identifier of its FOV of origin `fov`.
+
+    -   Once the matrix has been loaded, make sure to have a genes
+        (rows) X cells (columns) orientation required to work with
+        `Seurat`.\
+        If the orientation does not match, you can use the `Matrix::t()`
+        function to transpose the whole matrix.
+
+    -   Assign the new cell identifiers previously generated to column
+        names.
+\
+2.  In order to build your `SeuratObject`, you will also need to load the
+    CosMx cell metadata.\
+    
+    -   Create a new cell identifier by merging each single cell
+        `cell_ID` with the numeric identifier of its FOV of origin
+        `fov`.\
+        Bear in mind that the number and format of cell identifiers used
+        in the **count matrix** and **metadata** should match.
+\
+3.  Assess the presence of **negative probes** in the panel.
+
+    -   **Negative probes** are sequences which are not expected to be
+        found in human tissues, and their detection is used to quantify
+        the specificity of the real transcript detection.\
+        In other words, a high rate of negative probes might indicate
+        the presence of technical noise in our single-cell gene
+        expression profiles.\
+        Negative probes are useful for performing an initial quality
+        check, but they are not used to phenotype our single cells.\
+        Check if there are negative probes, and in case separate them
+        from the main gene expression matrix.
+\
+4.  Check whether information for all cells is present in both count
+    matrix and metadata.\
+    Reorder rows of the metadata file according to the order by which
+    cells are in the expression matrix.
+\
+5.  Create a `SeuratObject` using the main gene expression count with
+    the function `CreateSeuratObject()`.\
+    
+    -   As input files, use the count matrix and the metadata files you
+        manipulated. Specify your `assay` and `project`.\
+
+    -   Using the function `CreateAssayObject()`, generate an additional
+        assay containing the negative probes counts and add it to the
+        `SeuratObject` you built.
+\
+6.  Add the image to the `SeuratObject`.\
+
+    -   Create an object retrieving cell centroids using the function
+        `CreateCentroids()`. Bear in mind to use as coordinates for
+        centroids the columns `CenterX_global_px` and
+        `CenterY_global_px`, included in the metadata file.
+
+    -   From the object including centroids, create another object
+        with the spatial coordinates of your cells using the
+        function `CreateFOV()`.\
+        Specify `type = centroids` and the name of your `assay`.
+
+    -   Finally, add the spatial object to your main `SeuratObject`.\
+
+
+```{=html}
+  <hr>
+```
+
+**Questions**
+
+A.   How many cells are we considering in the assay?\
+
+B.   How many genes are included in the panel?\
+
+C.   How many FOVs cover the tissue slide?\
+
+```{=html}
+  <hr>
+```
+
+
+## **Solution** {.unnumbered}
+
+```{r,class.source="bg-success"}
+require(Matrix)
+
+# Load csv file 
+mat = arrow::read_csv_arrow('../input/CosMx/exprMat_file.csv')
+
+# Create new cell identifiers: 
+# we will create this common format by merging the numeric identifier of each single cell with the numeric identifier of its FOV of origin.
+ID = paste0(mat$fov,'_',mat$cell_ID)
+mat$fov = NULL
+mat$cell_ID = NULL
+
+# Convert count matrix in a sparse format (easier to manage) 
+mat = as(as.matrix(mat),'CsparseMatrix')
+
+# Transpose matrix to have genes as rows and cells as columns
+mat = Matrix::t(mat)
+
+# Set column name as cell IDs
+colnames(mat) = ID
+
+message('N genes = ' , nrow(mat), ' (negative probes included)')
+message('N cells = ' , ncol(mat))
+```
+
+```{r,class.source="bg-success"}
+meta = arrow::read_csv_arrow('../input/CosMx/metadata_file.csv')
+
+# Create new cell identifier as done before 
+meta$cell_ID = paste0(meta$fov,'_',meta$cell_ID)
+meta$fov = NULL
+
+head(meta)
+```
+
+```{r,class.source="bg-success"}
+# Create a new matrix containing only negative probes by doing a `grep` on row names containing pattern 'NegPrb' 
+negmat = mat[grepl('NegPrb', rownames(mat)),]
+
+print(paste0('N negative probes (NegPrb) = ', nrow(negmat)))
+
+# Remove negative probes from counts 
+mat = mat[!grepl('NegPrb', rownames(mat)),]
+message('N genes = ' , nrow(mat), ' (negative probes included)')
+message('N cells = ' , ncol(mat))
+```
+
+```{r,class.source="bg-success"}
+# Check cell id match between columns in gene expression matrix and metadata files
+match_ids = match(colnames(mat), meta$cell_ID)
+
+# Let's count how many usable cells (those whose expression data is matched with annotations in metadata) we are considering 
+# Of these, check how many are associated to genes or negative probes
+if(sum(is.na(match_ids))>0){
+  message(sum(is.na(match_ids)), ' cells do not have metadata information')
+  
+  usable_cells = which(!is.na(match_ids))
+  mat          = mat[,usable_cells]
+  negmat       = negmat[,usable_cells]
+  
+}
+
+# Reorder metadata
+meta = meta[match(colnames(mat), meta$cell_ID),]
+rownames(meta) = meta$cell_ID
+
+```
+
+```{r,class.source="bg-success"}
+require(Seurat)
+
+# Create a SeuratObject with main gene expression matrix 
+cosmx <-  CreateSeuratObject(counts = mat
+                            , meta.data = meta
+                            , assay='CosMx'
+                            , project = 'CosMx'
+                            )
+
+# As an additional assay, we add the counts of negative probes in the same format: features (rows) x cells (columns).
+cosmx[["negprobes"]] = CreateAssayObject(negmat)
+
+DefaultAssay(cosmx) <- 'CosMx' # The default assay is set to `CosMx`
+```
+
+```{r,class.source="bg-success"}
+# Next, we add single-cell spatial coordinates info (i.e., centroid coordinates)
+# Prepare centroid coordinates retrieving coordinates from metadata file 
+centroids <-  CreateCentroids(coords = meta %>% select(CenterY_global_px, CenterX_global_px, cell_ID))
+
+# Create an object with the spatial coordinates of cells 
+coords <- CreateFOV(
+    coords = centroids, # Spatial coordinates retrieved before 
+    type = "centroids",
+    molecules = NULL,
+    assay = "CosMx"
+  )
+
+# Add the spatial object to the `SeuratObject` and assign 'SP5' sample name to the new `Seurat` spatial data
+cosmx[['SP5']] = coords
+```
+
+
+```{r,class.source="bg-success", include=FALSE}
+message("How many cells we are considering in the assay?")
+ncol(cosmx)
+
+message("How many genes are included in the panel?")
+nrow(cosmx)
+
+message("How many FOVs are included in the panel?")
+length(unique(cosmx$orig.ident))
+```
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+# Test your dataset {.tabset .tabset-fade .tabset-pills}
+
+
+
+## Question {.unnumbered}
+
+Now, you have to:
+
+1.  Quantify the `capture efficiency` per cell defined as the ratio of
+    number of expressed genes (`nFeature`) and total counts (`nCount`).\
+    Add this metric in the `meta.data` dataframe included in your
+    `SeuratObject`.
+\
+2.  Assess the correlation between metrics included in `meta.data`
+    generating a pairs plot.
+\
+3.  Evaluate how multiple FOVs cover the tissue slide using the function
+    `ImageDimPlot()` .\
+    A good experiment will be the one where FOVs are not overlapping
+    each other. Are there any overlapping FOVs?
+\
+4.  Create violin plots resembling QC metrics using Seurat function
+    `VlnPlot()`.
+
+    -   What is reported on the x-axis of the plots?
+\
+5.  Add a column in the metadata an additional identifier common to all
+    cells, regardless of FOV.
+    
+    -   To assess whether there could be a potential bias in measured
+        gene expression according to the FOV, compute the mean of
+        capture efficiency per FOV. Is it overall similar across FOVs?
+        Consider the results of this calculations alngside the violin 
+        plots generated in the previous point.
+\
+6.  Visualize QC metrics using violin plots considering all FOVs together.\
+   
+    *HINT: you have to set as currently active identity the newly added column with the common identifier before using the `VlnPlot()` function*
+\
+7.  Visualize QC features over the HE image exploiting
+    `ImageFeaturePlot()`.
+\    
+8.  Remove cells with very few transcript/gene counts or noisy gene
+    expression profile.\
+    By applying permissive thresholds, we exclude cells with
+    insufficient gene expression information, which cannot be used for
+    downstream analysis.\
+    In particular, exclude cells with:
+
+    -   less than **20** transcripts;
+    -   **15** total expressed genes;
+    -   ratio of negative probes/real transcripts ≥ **5%**.\
+
+Generally speaking, we recommend to not apply too stringent thresholds
+on your single cells from the beginning, to avoid altering the
+interpretation of the cell ecosystem that characterize your CosMx
+sample.
+
+
+```{=html}
+  <hr>
+```
+
+## **Solution** {.unnumbered}
+
+
+```{r,class.source="bg-success", fig.height=16, fig.width=8, warning=FALSE}
+# Assess the capture efficiency
+# the capture efficiency is measured as the ratio nFeature_CosMx/nCount_CosMx per spot.
+# We add this annotation by creating a new column directly on the meta.data dataframe
+cosmx@meta.data$transcriptome_capture_efficiency = with(cosmx@meta.data, nFeature_CosMx/nCount_CosMx)
+cosmx@meta.data$transcriptome_capture_efficiency[which(is.na(cosmx@meta.data$transcriptome_capture_efficiency ))] = 0
+
+
+# Test the dependencies of the stats;
+selected_features = c("nFeature_CosMx","nCount_CosMx", "transcriptome_capture_efficiency" )
+
+
+# `pairs` creates a matrix of scatter plots for visualizing relationships between the selected features
+# we specify to returns the correlation estimate in the panel upper the diagonal with the parameter `upper.panel`. 
+pairs(cosmx@meta.data[,selected_features]
+      , lower.panel = panel.smooth
+      , upper.panel = panel.cor
+      ) 
+
+
+# Image with fluorescence signals localization
+FL_image = ImageDimPlot(cosmx, fov = 'SP5', axes = TRUE, dark.background = T)
+FL_image
+
+
+# `VlnPlot` is a function included in Seurat package that creates violin plots to visualize the distribution of features of interest. 
+# With the `feature` parameter we specifically select to consider the measures included in the vector selected_features. 
+# On the x axis we have the currently active identity in our `SeuratObject`, e.g. `orig.ident`. 
+VlnPlot(cosmx, layer = 'counts'
+        , features = selected_features, pt.size = 0.1, ncol = 1) & theme(axis.title.x = element_blank()) 
+
+
+# Compute the mean transcriptome capture efficiency for each FOV
+mean_capture_efficiency_fov = ddply(cosmx@meta.data, .(orig.ident), summarise, mean(transcriptome_capture_efficiency))
+mean_capture_efficiency_fov
+
+
+cosmx@meta.data$sample = 'SP5'
+Idents(cosmx) = cosmx$sample
+VlnPlot(cosmx, layer = 'counts'
+        , features = selected_features, pt.size = 0.1, ncol = 1) & theme(axis.title.x = element_blank()) 
+Idents(cosmx) = cosmx$orig.ident
+
+```
+
+```{r,class.source="bg-success", fig.width= 16, fig.height = 16}
+# Let's see the statistics on the tissue slide:
+# `SpatialDimPlot` and `SpatialFeaturePlot` are two main functions to plot features considering spatial information. 
+# Image with features plotted 
+FS_image = ImageFeaturePlot(cosmx, fov = 'SP5',  features = selected_features, cols = viridis::viridis(n = 2),
+                            , scale='feature', combine = T) 
+
+patchwork::wrap_plots(FL_image, FS_image, ncol = 1, nrow = 2)
+
+```
+
+```{r,class.source="bg-success"}
+# Apply a first permissive filtering step to CosMx cell based on total transcripts/genes and signal-to-noise ratio (i.e., (total NegativeProbe counts)/(total transcript counts))
+cosmx_cells = cosmx@meta.data
+message('[*] Removing cells with less than 20 transcripts')
+cosmx_cells = cosmx_cells %>% filter(nCount_CosMx >= 20)
+
+message('[*] Removing cells with less than 15 total expressed genes')
+cosmx_cells = cosmx_cells %>% filter(nFeature_CosMx >= 15)
+
+message('[*] Removing cells with a ratio of negative probes/real transcripts >= 5%')
+cosmx_cells = cosmx_cells %>% filter(nCount_negprobes/nCount_CosMx < 0.05)
+
+message('Cells passed all filtering steps: ', nrow(cosmx_cells),' out of ', nrow(cosmx@meta.data))
+
+# Removing cells from CosMx object
+cosmx = subset(cosmx, cells = rownames(cosmx_cells))
+rm(cosmx_cells)
+
+# Set CosMx cell ids as the main cell identifier in SeuratObject
+Idents(cosmx) = 'cell_ID'
+
+```
+
+
+```{=html}
+  <hr>
+```
+
+
+# Identification of cluster of spots {.tabset .tabset-fade .tabset-pills}
+
+
+## Question {.unnumbered}
+
+Let's define clusters of spots that share similar transcriptomic
+profiles.
+
+1.  Normalize counts using the log-normalization method and choose a
+    reasonable number of top variable features using
+    `FindVariableFeatures()`.\
+   
+    *HINT: In the analysis of 10X Visium data we selected 2,000 genes as the top variable out of 33,538 genes; in this context, bear in mind you are dealing with a CosMx gene panel consisting of 960 genes.*\
+  
+2.  Perform PCA dimensionality reduction computing first 50 PCs and
+    scale data.\
+
+3.  Find the 20-nearest neighbours of each cell using the function `FindNeighbors()`.\
+
+4.  Identify clusters using `PCA reduction` as a reduction for the nearest-neighbour graph construction. Specifically, use the first 30 dimensions of PCA as input.\
+
+5.  Visualize the identified clusters over the tissue image using `ImageDimPlot()`.\
+
+6.  Visualize each cluster on the tissue image by specifying in the function `ImageDimPlot()` to split by clusters.\
+
+
+```{=html}
+  <hr>
+```
+
+
+**Questions**
+
+A.  How many top variable genes did you select? \
+
+B.  What threshold did you set for the `resolution` parameter in the function `FindClusters()`? How many clusters did you find? Explain the reasoning behind the threshold you chose. \
+    
+
+
+```{=html}
+  <hr>
+```
+
+
+## **Solution** {.unnumbered}
+
+```{r,class.source="bg-success", message = FALSE, fig.width=13, fig.height=15}
+# We perform standard log-normalization of count data 
+cosmx <- NormalizeData(cosmx, assay = "CosMx", normalization.method = "LogNormalize")
+
+# We compute the top 250 variable features according to mean expression and standard deviation of each feature
+# As a selection method we use 'vst' which is commonly used.
+# First, fits a line to the relationship of log(variance) and log(mean) using local polynomial regression (loess).
+# Then standardizes the feature values using the observed mean and expected variance (given by the fitted line). 
+# Feature variance is then calculated on the standardized values after clipping to a maximum equal to square root of the number of cells (default)
+cosmx <- FindVariableFeatures(cosmx, selection.method = "vst", nfeatures = 250)
+
+# Scale and centers features 
+cosmx <- ScaleData(cosmx)
+
+# Perform PCA dimensionality reduction computing 50 PCs
+cosmx <- RunPCA(cosmx, assay = "CosMx", reduction.name = "pca", npcs = 50)
+
+#`FindNeighbors` function to compute the nearest neighbours (NN) for clustering, identifying the nearest neighbours of each cell based on the first 30 PCs.
+# we use PCA reduction as input for the NN graph construction exploiting the first 30 dimensions of PCA. 
+cosmx <- FindNeighbors(cosmx, assay = "CosMx", reduction = "pca", dims = 1:30)
+
+#`FindClusters` identifies clusters in the data, maximizing resolution parameter we obtain a larger number of communities 
+# We employ Louvain algorithm for modularity optimization
+cosmx <- FindClusters(cosmx, cluster.name = "seurat_cluster", resolution = 3, algorithm = 1)
+
+
+# The identified clusters are visualized over the spatial image: this helps to see the spatial distribution of different gene expression patterns.
+Idents(cosmx) <- "seurat_clusters" 
+
+cluster_slide = ImageDimPlot(cosmx, fov = 'SP5', axes = TRUE)
+cluster_slide
+cluster_slide_split <- ImageDimPlot(cosmx, fov = 'SP5', axes = TRUE, split.by = 'seurat_clusters' ) + NoLegend()
+cluster_slide_split
+
+```
+
+
+
+```{=html}
+  <hr>
+```
+
+# Getting the gene signatures {.tabset .tabset-fade .tabset-pills}
+
+## Question {.unnumbered}
+
+1.  Use the function `FindAllMarkers()` to get the list of genes that
+    represent each cluster keeping only positive markers.\
+    Choose proper thresholds for parameters in the function in order to
+    limit the testing procedure:
+
+    -   to genes having at least *X*-fold difference (log-scale);
+
+    -   to consider only genes detected in a minimum fraction of *X*
+        cells in clusters.
+
+2.  Rank markers per cluster according to the adjusted p-value.
+
+3.  Subset in another variable markers having a `log2(fold-change) ≥ 1`
+    and `adjusted p-value ≤ 0.1`.
+
+4.  Visualize expression of top 10 markers per cluster in a heatmap.
+
+
+```{=html}
+  <hr>
+```
+
+
+**Questions**
+
+A)   How many positive markers did you identify per cluster? Of those, how many are differentially expressed?
+
+```{=html}
+  <hr>
+```
+
+
+
+
+## **Solution** {.unnumbered}
+
+```{r,class.source="bg-success",  fig.width=17, fig.height=24}
+require(presto) # This package speeds up the computational time
+DefaultAssay(cosmx) <- "CosMx"
+
+# Find all markers (defined as differentially expressed genes) for each cluster
+# Specifying `only.pos = TRUE` we obtain only positive markers (having FC > 0 )
+# We select Wilcox test for statistical testing, considering only genes detected in a minimum fraction of 0.01 cells and 
+# that show at least 0.1-fold difference (log-scale) between the groups.
+
+cosmx <- BuildClusterTree(cosmx, assay = "CosMx", reduction = "pca", reorder = T)
+markers <- FindAllMarkers(cosmx, assay = "CosMx", only.pos = TRUE
+                          , min.pct = 0.01, logfc.threshold = 0.1, test.use = "wilcox")
+
+# Adds a rank column to the markers datafame, ranking them by adjusted p-value
+markers <- ddply(markers, .(cluster), mutate, rank = rank(p_val_adj))
+
+# Filter markers to select the ones with a log2fold change ≥ 1 and adjusted p-value ≤ 0.1
+markers %>%
+  group_by(cluster) %>%
+  dplyr::filter(avg_log2FC >= 1 & p_val_adj <= 0.1) -> selected_markers
+
+# Selects the top 10 genes for each cluster
+selected_markers %>% slice_head(n = 10) %>% ungroup() -> top10
+
+# `ScaleData` Scales and centers the data for the selected features (e.g top10$gene)
+cosmx_subset <- ScaleData(cosmx, assay = "CosMx", features = top10$gene)
+
+# `features` specifies the features (genes) to be included in the heatmap
+DoHeatmap(cosmx_subset, assay = "CosMx", features = top10$gene, size = 2.5) + 
+  theme(axis.text = element_text(size = 5.5)) + NoLegend()
+
+```
+
+```{r n markers,class.source="bg-success", include = FALSE}
+
+stats_markers = left_join(as.data.frame(table(markers$cluster)) %>% dplyr::rename('cluster' = 'Var1','markers' = 'Freq'), 
+          as.data.frame(table(selected_markers$cluster)) %>% dplyr::rename('cluster' = 'Var1','selected_markers' = 'Freq'))
+
+```
+
+```{=html}
+  <hr>
+```
+
+# Functional analysis on markers {.tabset .tabset-fade .tabset-pills}
+
+Let's identify cancerous and not cancerous cells by annotating markers
+on the Hallmarks of cancer gene set and NCG collection of cancer
+genes/healthy drivers.
+
+How many superclasses of cells can we spot in the lesion? What are they?
+
+To do so we will exploit:
+
+-   the involvement of genes in the Hallmarks of Cancer database
+-   the selective advantage of being cancer and healthy drivers genes
+
+
+In this phase, consider all positive markers you identified per cluster.
+In this way, you will get a comprehensive view of the genes composing each
+cluster.
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## Question {.unnumbered}
+
+### **Hallmarks of cancer**
+
+
+To investigate Hallmarks of Cancer features :
+
+1.  Retrieve human Hallmarks gene set from [MSigDB
+    Collections](https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp)
+    through `msigdbr()` function by specifying the abbreviation category
+    correspondent to Hallmarks collection.\
+
+
+2.  Perform an enrichment analysis with `enricher()` function on all
+    positive markers identified per cluster.\
+    Employ the following cutoffs:
+
+    -   `p-value = 1` and `q-value = 1`;
+    -   For multiple testing correction method, use the
+        `Benjamini–Hochberg method`;
+    -   Finally, select statistically significant enrichments (FDR \<0.1).
+\
+
+3.  Generate a plot visualizing enriched hallmark-related pathways on
+    y-axis, the $-log_{10}(FDR)$ on the x-axis and colour by cluster
+    identifier.
+
+
+### **Network of Cancer Genes & Healthy Drivers**
+
+To investigate NCG features :
+
+1.  Download the manually curated collection of cancer genes and healthy
+    drivers from [Network of Cancer Genes & Healthy Drivers (NCG)
+    portal](http://network-cancer-genes.org/).\
+    Alternatively, you can find in `input` folder data already
+    downloaded.
+
+    | What                        | Path to                                                          |
+    |:-----------------------|:-----------------------------------------------|
+    | Drivers of cancer clone     | `../input/NCG_cancerdrivers_annotation_supporting_evidence.tsv/` |
+    | Drivers of not cancer clone | `../input/NCG_healthydrivers_annotation_supporting_evidence.tsv` |
+\
+
+2.  Subset cancer drivers primarily implicated in ovarian cancer and
+    healthy drivers associated to gynaecologic organ system.\
+    
+
+3.  In the dataframe containing all positive markers per cluster, add
+    two columns to annotate whether each gene is a
+    `driver of cancer clone` or `driver of not cancer clone` according
+    to NCG collection.\
+
+
+4.  Sum up how many `drivers of cancer clone` and
+    `drivers of not cancer clone` are expressed in each spot and add
+    these annotations to the `meta.data` table of your `SeuratObject`.\
+
+
+5.  Visualize these two newly added features over the tissue image.
+
+
+
+```{=html}
+  <hr>
+```
+
+
+**Questions**
+
+A.   How many cancer genes and healthy genes are we dealing with?
+
+
+B.   Did any cluster express either driver of cancer clone or driver of not
+    cancer clone clearly separated in the tissue?
+
+
+C.   Where would you expect to spot cancer lesions in the tissue
+    according to expression of cancer drivers?
+
+
+D.   Which Hallmark pathways are enriched in clusters expressing driver
+    of cancer clone? And in those featuring drivers of not cancer
+    clones?
+
+
+E.  Are these results consistent with the ones obtained in level 1?
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## **Solution** {.unnumbered}
+
+```{r,class.source="bg-success", message = FALSE, fig.height=9, fig.width=13 , warning=FALSE}
+# Fetching Hallmark gene sets:
+h_gene_sets = msigdbr(species = "human", category = "H")
+
+# The `enricher` function performs enrichment analysis of the genes of each cluster.
+res = vector("list", length(unique(markers$cluster)))
+
+for(i in unique(markers$cluster)){
+  genes = unique(subset(markers, cluster==i)$gene)
+  genes = genes[!is.na(genes)]
+  y = enricher(genes
+               , TERM2GENE = h_gene_sets[,c('gs_name','gene_symbol')]
+               , pAdjustMethod = "BH"
+               , pvalueCutoff=1
+               , qvalueCutoff=1 )
+  y = y@result
+  y$cluster = i
+  res[[i]] = y 
+}
+
+# Selecting statistically significant enrichments (defined as enrichment FDR < 0.1)
+enr = bind_rows(res) %>% subset(p.adjust<=0.1)
+
+# Visualization of Enrichment results
+ggplot(enr, aes(x = -log10(p.adjust), y = fct_reorder(Description, p.adjust, .desc = T), color = cluster, shape = cluster)) + 
+  geom_point(size = 2) +  scale_shape_manual(values = c(0:14, 64:91), ) + scale_x_sqrt()+ theme_bw()
+
+```
+
+```{r,class.source="bg-success"}
+# Loading NCG data:
+cgc      = subset(read.delim2('../input/NCG_cancerdrivers_annotation_supporting_evidence.tsv')
+              , primary_site %in% c('ovary'))
+
+cgc_cosmx = unique(cgc[cgc$symbol %in% Features(cosmx),'symbol'])
+
+healthy  = subset(read.delim2('../input/NCG_healthydrivers_annotation_supporting_evidence.tsv'),
+                  organ_system == 'Gynecologic')
+healthy_cosmx = unique(healthy[healthy$symbol %in% Features(cosmx),'symbol'])
+
+message("The dimensions of the cancer genes dataframe are: ", paste(dim(cgc), collapse = " x "))
+message("The dimensions of the healthy genes dataframe are: ", paste(dim(healthy), collapse = " x "))
+
+message("The dimensions of the cancer genes in CosMx panel are: ", paste(dim(cgc_cosmx), collapse = " x "))
+message("The dimensions of the healthy genes in CosMx panel are: ", paste(dim(healthy_cosmx), collapse = " x "))
+
+
+# The `markers$driver_cancer_clone` and `markers$driver_not_cancer_clone` flags classify markers as either cancer drivers or not.
+markers$driver_cancer_clone     = markers$gene %in% cgc$symbol
+markers$driver_not_cancer_clone = markers$gene %in% healthy$symbol
+
+
+# `overview` summarizes the number of markers and the count of cancer and non-cancer drivers per cluster.
+overview = ddply(markers, .(cluster), summarise
+      , markers = n()
+      , driver_cancer_clone = sum(driver_cancer_clone)
+      , driver_not_cancer_clone = sum(driver_not_cancer_clone)
+) %>% arrange(as.numeric(as.character(cluster)))
+
+
+# Adding metadata to the SeuratObject to visualize cancer driver information
+cancer = overview$driver_cancer_clone[match(Idents(cosmx), overview$cluster)]
+names(cancer) <- colnames(cosmx)
+not_cancer = overview$driver_not_cancer_clone[match(Idents(cosmx), overview$cluster)]
+names(not_cancer) <- colnames(cosmx)
+
+
+cosmx <- AddMetaData(object = cosmx, metadata = cancer, col.name = 'driver_cancer_clone')
+cosmx <- AddMetaData(object = cosmx, metadata = not_cancer, col.name = 'driver_not_cancer_clone')
+
+
+
+# Visualizing how cancer and non-cancer driver genes are distributed
+cgc_slide_driver = ImageFeaturePlot(cosmx, fov = 'SP5', features = c('driver_cancer_clone') )
+
+cgc_slide_not_driver = ImageFeaturePlot(cosmx, fov = 'SP5', features = c('driver_not_cancer_clone'))
+
+patchwork::wrap_plots(cgc_slide_driver, cgc_slide_not_driver, ncol = 1)
+```
+
+
+```{=html}
+  <hr>
+```
+
+
+# Prediction cellular types by unsupervised approach {.tabset .tabset-fade .tabset-pills}
+
+Let's see whether we can strengthen the results by inferring cell
+composition.
+
+Cell type prediction can be done using an unsupervised approach based on
+the [`clustermole` package](https://igordot.github.io/clustermole/).\
+Clustermole performs cell type prediction based on a set of marker genes
+or on a table of expression values.
+
+We will infer cell types from the gene expression matrix.
+
+
+## Question {.unnumbered}
+
+1.  From `SeuratObject` retrieve the assay data containing normalized
+    counts and transform it into a matrix.
+
+2.  Perform cell type prediction with `clustermole`.
+
+    -   In this scenario, we cannot use the function
+        `clustermole_enrichment()` provided by `clustermole` package
+        because it works with a matrix with at least 5,000 rows.
+        Instead, our gene expression matrix covers 979 genes.\
+        Use an adapted function `clustermole_enrichment_cosmx()`
+        included in R script with the helper functions.
+
+    -   Among available enrichment methods use `ssGSEA`, given that it
+        is one of most accurate methods for gene set enrichment (GSE)
+        analyses *([Lauria A. et al., NAR. (2020)](https://doi.org/10.1093/nar/gkz1208))* .
+\
+3.  Retrieve the full list of human cell type markers in the
+    `clustermole` database using `clustermole_markers()`.\
+    Subset the table by selecting rows matching the patterns `Human` and
+    `CellMarker` in the `celltype_full` column.\
+    From this selection, filter markers that meet **at least one** of
+    the following conditions:
+
+    - related to `ovary` as organ\
+    - **not** containing one of the following pattern:
+        `Pluripotent|Pancrea|Hepat|Sertoli|Oligo|Induced|Hematopoietic|Plasma|Mast|Pluripotentstemcell|Platelet|Megakaryocyte|Embr|Neur|Glia|glia|Purkinje|Pyrami|Germ|germ|Follic|neuro|Adventitial`.
+
+\
+4.  Subset cell type enrichments obtained from step 2 keeping only cell
+    types selected in the previous step.\
+    Select the most enriched cell type per cell according to the
+    score_rank. Now, you can add this cell type prediction per cell in
+    the `meta.data` table of your `SeuratObject`.\
+
+5.  Visualize cell type composition:
+
+    -   In the cell type enrichment dataframe add a column specifying
+        for each cell ID the correspondent cluster.
+
+    -   Calculate proportions of predicted cell types per cluster.
+
+    -   Generate a barplot plotting on x-axis the different cluster and
+        filled by the proportion of cell types.
+
+    -   Which clusters contain a higher fraction of cancer cells?\
+
+
+
+```{=html}
+  <hr>
+```
+
+
+**Questions**
+
+A.  If you plot the image with clusters projected over the tissue slide
+    by side, where can you spot tumoral cells over the tissue?
+    
+    
+B.  Calculate cell types per cluster and visualize the results over the
+    tissue image: which cell types compose clusters expressing cancer
+    drivers measured in the previous section?
+    
+    
+C.   Are cancer cells located on the tissue in the same regions as
+    detected by Visium data?
+    
+    
+
+```{=html}
+  <hr>
+```
+
+
+## **Solution** {.unnumbered}
+
+```{r,class.source="bg-success", fig.width=15, fig.height=15}
+DefaultAssay(cosmx) <- "CosMx"
+
+log_norm_counts = GetAssayData(object = cosmx, layer = 'data') %>% as.matrix()
+l <- clustermole_enrichment_cosmx(log_norm_counts, species = "hs", method = 'ssgsea')
+
+
+db_mrks = clustermole_markers(species =  c( "hs")) # Retrieves marker data specific to human cells 
+
+cmh = ddply(subset(db_mrks, grepl('Human', celltype_full) & grepl('CellMarker',celltype_full)), .(db), summarise
+            , celltype_full=unique(celltype_full), db = unique(db))
+cmh$n_info = sapply(strsplit(cmh$celltype_full, "\\|"), length)
+cmh$celltype = sapply(strsplit(cmh$celltype_full,"\\|"), '[[',1)
+cmh$organ = sapply(strsplit(cmh$celltype_full,"\\|"), '[[',2)
+
+# Select marker associated to ovary as organ OR not containing those reported patterns 
+selected_cell_types = subset(cmh, 
+                             (n_info == 3 & 
+                                !grepl("\\(|Pluripotent|Pancrea|Hepat|Sertoli|Oligo|Induced|Hematopoietic|Plasma|Mast|Pluripotentstemcell|Platelet|Megakaryocyte|Embr|Neur|Glia|glia|Purkinje|Pyrami|Germ|germ|Follic|neuro|Adventitial", celltype_full)) 
+                             | organ == " Ovary ")$celltype_full
+rm(cmh, db_mrks)
+
+# Subsets cell type  enrichment keeping only cell types of interest 
+# We will select enrichments based on Cell Marker DB as it is a manually-curated resource including a fine-grained collection of experimentally supported markers of various cell types in different tissues of human and mouse.
+enr_res = subset(l, celltype_full %in% selected_cell_types) # Includes only the cell types 
+colnames(enr_res)[which(colnames(enr_res) == 'cluster')] = 'cell_ID'
+enr_res$celltype_full  = gsub(" | Human | CellMarker", "", enr_res$celltype_full)
+enr_res$celltype_full  = gsub( "\\||", "", enr_res$celltype_full)
+
+celltype = enr_res$celltype_full[match(Cells(cosmx), enr_res$cell_ID)]
+names(celltype) <- colnames(cosmx)
+
+cosmx <- AddMetaData(object = cosmx, metadata = celltype, col.name = 'celltype_full') # Adds the predicted cell types as metadata to the SeuratObject
+cosmx@meta.data$celltype_full[which(is.na(cosmx@meta.data$celltype_full))]= "Other_cell_types"
+
+
+# Summarizing enrichment results and identifies the most enriched cell type per cluster
+enr_res = ddply(enr_res,.(cell_ID), summarise, celltype_full = celltype[which(score_rank == min(score_rank))])
+
+
+# Retrieve the cluster to whom each cell belongs
+cells_annotated = CellsByIdentities(cosmx, idents = sort((unique(cosmx@meta.data$seurat_clusters))))
+cells_annotated = mapply(function(x,y){data.frame(cell_ID = x, cluster = y)}, x = cells_annotated, y = names(cells_annotated), SIMPLIFY = F)
+cells_annotated = bind_rows(cells_annotated)
+
+
+# Merges and summarizes the enrichment results with cell spots, calculating the percentage of spots per cluster
+# Add the correspondent cluster ID to eache cell type 
+enr_res = left_join(enr_res, cells_annotated, by = "cell_ID")
+# Compute the number of spots per cluster enriched for each inferred cell type 
+enr_res = ddply(enr_res, .(cluster, celltype_full), summarise, n_cells = n() ) 
+# Compute the number of spots per cluster 
+enr_res = ddply(enr_res, .(cluster), mutate, total_cells = sum(n_cells))
+# Compute the percentage of each cell type found per cluster 
+enr_res$perc_cell_per_cluster= enr_res$n_cells/enr_res$total_cells
+
+# Visualizing cell type composition
+
+enr_res$cluster = factor(enr_res$cluster, levels = sort(unique((enr_res$cluster))))
+
+celltype_barplot = ggplot(enr_res, aes(cluster, perc_cell_per_cluster, fill=celltype_full))+
+  geom_bar(stat='identity', position = position_stack(), color='white')+ theme_bw()+ 
+  ylab('Cell percentage per cluster')+  ggsci::scale_fill_ucscgb()
+celltype_barplot
+
+
+patchwork::wrap_plots(celltype_barplot, cluster_slide_split , ncol=1 )
+
+```
+
+
+```{=html}
+  <hr>
+```
+
+
+# Identification of ligand receptors (LR) interactions {.tabset .tabset-fade .tabset-pills}
+
+## Question {.unnumbered}
+
+1. Detect LR interactions of **each cell type** using
+    [LIANA](https://www.nature.com/articles/s41467-022-30755-0).\
+    Specifically, select [natmi](https://github.com/forrest-lab/NATMI), [cell_italk](https://github.com/Coolgenome/iTALK), [call_cellchat](https://github.com/jinworks/CellChat) and   [sca](https://github.com/SCA-IRCM/SingleCellSignalR)
+    as methods and [OmniPath](https://github.com/saezlab/OmnipathR) as resource.\
+
+    -   Require a minimum of **20** cells per cell type to be considered
+        for analysis.
+
+    -   Specify to add the following supplementary columns:
+        `ligand.expr`, `receptor.expr`, `ligand.pval`, `receptor.pval`,
+        `ligand.FDR`, `receptor.FDR`.\
+
+2.  Aggregate results and specify the ranking of each interaction
+    according the `aggregate_rank` score.\
+
+3.  Explore visualization function provided by LIANA. Highlight LR
+    interactions involving cancer cells.
+
+
+```{=html}
+  <hr>
+```
+
+
+**Questions**
+
+
+A.  Which are the top-5 ranked LR interactions per cell type?
+
+
+B.  Which are LR interactions involving cancer cells as target? Is there a most recurrent interactor?
+
+    
+C.  Is there concordance with the ligand-receptor signalling inference
+    you got using 10X Visium data?
+
+
+```{=html}
+  <hr>
+```
+
+
+## **Solution** {.unnumbered}
+
+```{r,class.source="bg-success", fig.width=10, fig.height=15}
+cosmx <- SetIdent(cosmx, value = "seurat_clusters")
+
+# Detect ligand-receptor interactions of *each cell type* using LIANA function `liana_wrap()`. 
+# Specifically, we use `natmi`, `call_italk`, `call_cellchat` and `sca` as methods and `OmniPath` as resource.
+# Require a minimum of 5 cells per cell type to be considered for analysis.
+# Specify to add these following supplementary columns: `ligand.expr`, `receptor.expr`, `ligand.pval`, `receptor.pval`, `ligand.FDR`, `receptor.FDR`.\=
+
+liana = liana_wrap(cosmx,
+                   method = c( "natmi"
+                              , "call_italk"
+                              , "call_cellchat" 
+                              , "sca" 
+                              ),
+                   resource = c("OmniPath"), 
+                   idents_col = 'celltype_full',
+                   min_cells = 20,
+                   return_all = FALSE,
+                   supp_columns = c("ligand.expr", "receptor.expr",  "ligand.pval", "receptor.pval", "ligand.FDR",
+                                    "receptor.FDR"),
+                   verbose = TRUE,
+                   assay = "CosMx",
+                   .simplify = TRUE,
+                   cell.adj = NULL
+                   )
+
+
+# Liana returns a list of results, each element of which corresponds to a method
+# With `liana_aggregate()` function we aggregate scores 
+liana.summary = liana %>% dplyr::glimpse()
+liana.summary <- liana.summary %>% liana_aggregate()
+
+# Add rank to each LR pair interaction
+liana.summary = ddply(liana.summary, .(source,target), mutate, ranking = rank(aggregate_rank))
+
+# Select the top 5 scoring interactions
+top.ranked = subset(liana.summary, ranking <= 5)
+
+# Select LR interactions from selected cell types to tumoral cells represented by epithelial cells 
+lr  = subset(top.ranked, source %in% c("Macrophage", "M1macrophage", "M2macrophage","ExhaustedTcell", 'ActivatedTcell') & target=="Epithelialcell(OvarianCancer)Ovary")
+
+```
+
+```{r}
+DT::datatable(top.ranked, rownames = F,style = "auto", class = 'cell-border stripe', options = list(scrollX = T, fixedColumns = list(leftColumns =1 )))
+```
+
+```{r}
+DT::datatable(lr, rownames = F,style = "auto", class = 'cell-border stripe', options = list(scrollX = T, fixedColumns = list(leftColumns =1 )))
+```
+
+
+
+```{r, class.source="bg-success",  fig.height=9, fig.width=13}
+#heatmap to visualize the frequency of ligand-receptor interactions among cell-types 
+heat_freq(liana.summary)
+```
+
+
+```{r, class.source="bg-success"}
+# Plotting frequency ChordDiagram related epithelial cells involeved LR 
+chord_freq(liana.summary,
+                source_groups = c("Epithelialcell(OvarianCancer)Ovary"))
+
+```
+
+
+
+
+
+
+```{r,class.source="bg-success"}
+
+cosmx <- SetIdent(cosmx, value = "seurat_clusters")
+
+# CellChat does not work with cluster id, so we convert cluster number id using a 1-based numeration
+cosmx$numbered_clusters = as.numeric(cosmx$seurat_clusters)
+
+
+# Detect ligand-receptor interactions of clusters using LIANA function liana_wrap(). 
+# Specifically, we use `natmi`, `cell_italk`, `call_cellchat` and `sca` as methods and `OmniPath` as resource.
+# Require a minimum of 5 cells per cluster to be considered for analysis.
+# Specify to add these following supplementary columns: `ligand.expr`, `receptor.expr`, `ligand.pval`, `receptor.pval`, `ligand.FDR`, `receptor.FDR`.\=
+
+liana_clusters = liana_wrap(cosmx,
+                   method = c( "natmi"
+                              , "call_italk"
+                              , "call_cellchat" 
+                              , "sca" 
+                              ),
+                   resource = c("OmniPath"), 
+                   idents_col = 'numbered_clusters',
+                   min_cells = 20,
+                   return_all = FALSE,
+                   supp_columns = c("ligand.expr", "receptor.expr",  "ligand.pval", "receptor.pval", "ligand.FDR",
+                                    "receptor.FDR"),
+                   verbose = TRUE,
+                   assay = "CosMx",
+                   .simplify = TRUE,
+                   cell.adj = NULL
+                   )
+
+
+# Liana returns a list of results, each element of which corresponds to a method
+# By liana_aggregate() we aggregate scores 
+liana_clusters.summary = liana_clusters %>% dplyr::glimpse()
+liana_clusters.summary <- liana_clusters.summary %>% liana_aggregate()
+
+# Add rank to each LR pair interaction
+liana_clusters.summary = ddply(liana_clusters.summary, .(source,target), mutate, ranking = rank(aggregate_rank))
+
+# Select the top 5 scoring interactions
+top.ranked_clusters = subset(liana_clusters.summary, ranking <= 5)
+
+# Select LR interactions to clusters compoed of tumoral cells 
+# Bear in mind we add +1 to cluster number ids 
+
+lr_clusters  = subset(top.ranked_clusters, target %in% c(6,7))
+```
+
+
+```{r}
+DT::datatable(top.ranked_clusters, rownames = F,style = "auto", class = 'cell-border stripe', options = list(scrollX = T, fixedColumns = list(leftColumns =1 )))
+```
+
+```{r}
+DT::datatable(lr_clusters, rownames = F,style = "auto", class = 'cell-border stripe', options = list(scrollX = T, fixedColumns = list(leftColumns =1 )))
+```
+
+
+
+```{=html}
+  <hr>
+```
+
+
+# Find a major receptor involved in ovarian cancer onset and progression {.tabset .tabset-fade .tabset-pills}
+
+Select from your LR interaction the one that you believe to be involved in ovarian cancer progression. \
+
+This tyrosine kinases receptor is part of a family composed by two members that are predominantly expressed in epithelial cells and mesenchymal cells and are activated by various types of collagens.\
+
+During tumorigenesis, abnormal activation of this receptor can lead to invasion and
+metastasis, via dysregulation of: \
+-   cell adhesion \
+-   migration \
+-   proliferation \
+-   secretion of cytokines \
+-   extracellular matrix remodeling
+
+
+
+Recent findings have already supposed as its expression might represent a negative prognostic factor in patients affected by ovarian cancer. 
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## Question {.unnumbered}
+
+1.  Plot the expression of your receptor over the HE image of the tissue. 
+    Which are the regions in which your receptor is predominantly expressed?
+
+
+2.  Determine if aforementioned mechanisms altered due to an aberrant expression of
+    your receptor are enriched in your clusters with your receptor as
+    differentially expressed marker.\
+    To do so, perform an over-representation analysis (ORA) on the selected
+    markers of these clusters using [KEGG gene sets](https://www.genome.jp/kegg/genes.html).\
+    
+      *HINT: To retrieve KEGG-related genes, use the same function employed to fetch Hallmarks gene set but specify `category = 'C2' and subcategory = 'KEGG'`*
+
+
+
+3.  Select statistically significant enrichments and plot the ORA results.
+    On the x-axis, display the clusters expressing your gene as selected marker, and on y-axis show enriched KEGG pathways. Use points to represent the enrichment
+    score.\
+    
+      *HINT: as enrichment score you can use the gene ratio or rich factor, for example.*
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+**Questions**
+
+A)   In which regions of the tissue is your receptor mainly expressed?
+
+
+B)  Which metric did you chose as enrichment score? Motivate this
+    choice.
+
+
+C)   Considering the pathways characterizing clusters expressing your receptor as
+    selected marker, do you find any mechanism implicated in the dysregulation of your receptor expression mentioned above?
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## **Solution** {.unnumbered}
+
+```{r,class.source="bg-success", eval = FALSE, include = FALSE}
+
+# Plot the expression of DDR1 on tissue slide
+ImageFeaturePlot(cosmx, features = "DDR1" ) + ggtitle("DDR1 expression")
+
+
+# These are clusters having DDR1 as selected marker (logFC > 1 and pvalue adjusted < 0.1)
+unique(subset(selected_markers, gene =='DDR1')$cluster)
+
+# Fetching KEGG gene set
+kegg_gene_sets = msigdbr(species = "human", category = 'C2', subcategory = 'KEGG')
+
+# ORA on selected markers of DDR1-related clusters using KEGG
+res_DDR1 = vector("list", length(unique(subset(selected_markers, gene =='DDR1')$cluster)))
+
+for(i in unique(subset(selected_markers, gene =='DDR1')$cluster)){
+  print(i)
+  genes = unique(subset(selected_markers, cluster==i)$gene)
+  genes = genes[!is.na(genes)]
+  y = enricher(genes
+               , TERM2GENE = kegg_gene_sets[,c('gs_name','gene_symbol')]
+               , pAdjustMethod = "BH"
+               , pvalueCutoff=1
+               , qvalueCutoff=1 )
+  y = y@result
+  y$cluster = i
+  res_DDR1[[i]] = y 
+}
+
+# Select statistically significant enrichments 
+enr_DDR1 = bind_rows(res_DDR1) %>% subset(p.adjust<=0.1)
+
+# Add enrichment scoring metrics 
+enr_DDR1 = enr_DDR1 %>% mutate(geneRatio = as.numeric(sapply(strsplit(GeneRatio,'/'),`[`,1)) /
+                                 as.numeric(sapply(strsplit(GeneRatio,'/'),`[`,2))
+                               , richFactor = as.numeric(sapply(strsplit(GeneRatio,'/'),`[`,1)) / as.numeric(sub("/\\d+", "", BgRatio)) )
+
+
+```
+
+
+```{r,class.source="bg-success",  fig.height=12, fig.width=10, include=FALSE, eval = FALSE}
+# Visualize ORA results 
+ ggplot(enr_DDR1,
+       aes(x = cluster, y = Description)) + 
+  geom_point(shape=21, aes(fill=p.adjust, size = geneRatio)) +
+  scale_color_manual(values=c('black','transparent'))+
+  scale_fill_viridis_c(option = 'D',guide=guide_colorbar(reverse=T, draw.llim = T), direction = -1) + scale_shape_manual(21)+
+  scale_size_continuous(range=c(0, 4)) +
+  theme_minimal() 
+```
+
+
+```{r,class.source="bg-success",  fig.height=12, fig.width=10, include=FALSE, eval = FALSE}
+ ggplot(enr_DDR1,
+       aes(x = cluster, y = Description)) + 
+  geom_point(shape=21, aes(fill=p.adjust, size = richFactor)) +
+  scale_color_manual(values=c('black','transparent'))+
+  scale_fill_viridis_c(option = 'D',guide=guide_colorbar(reverse=T, draw.llim = T), direction = -1) + scale_shape_manual(21)+
+  scale_size_continuous(range=c(0, 4)) +
+  theme_minimal() 
+```
+
+We can appreciate the enrichment of these cluster in pathways related to
+remodelling of the extracellular matrix.
+
+
+
