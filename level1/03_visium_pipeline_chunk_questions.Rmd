@@ -1,0 +1,817 @@
+---
+title: "Hackathon Level 1"
+output: 
+  html_document:
+    code_folding: show
+    toc: true
+    toc_float: true
+    toc_depth: 2
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+
+<!-- <style> -->
+<!-- .list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover { -->
+<!--     background-color: #08C477; -->
+<!-- } -->
+<!-- </style> -->
+
+
+```{=html}
+<style type="text/css">
+  body{
+  font-size: 12pt;
+}
+</style>
+```
+
+```{r include=FALSE}
+knitr::opts_chunk$set( eval = TRUE, echo= TRUE, message = FALSE, warning = FALSE, highlight = TRUE)
+```
+
+# Introduction
+
+We will analyse 10x Genomics Visium spatial transcriptomics (ST) data from a tissue slide of **high-grade serous ovarian carcinoma** (HGSOC).\
+
+Ovarian cancer remains the eighth leading cause of cancer deaths in women worldwide and high-grade serous ovarian carcinoma (HGSOC) is the most common and lethal histologic subtype. \
+Genomes of HGSOC are **highly heterogeneous** with most alterations only found in a small fraction of tumours. \
+Also, due to a high degree of **chromosomal instability**, most HGSOCs are polyclonal. As the cancer progresses and metastasises, **clonal diversity** increases, which is associated with **worse prognosis** and development of **chemoresistance**. \
+
+Standard first-line treatment for HGSOC typically consists of debulking surgery, which involves removal of as much of the tumor as possible, followed by intravenous paclitaxel/platinum-based chemotherapy, and often subsequent maintenance therapy.\ 
+
+Investigating tumor heterogeneity, The Cancer Genome Atlas (TCGA) project revealed **four molecular subtypes** of HGSOC based on bulk expression measurements: mesenchymal, proliferative, immunoreactive, and differentiated. These subtypes are associated with differences in prognosis. \
+It is now generally accepted that transcriptional subtypes of HGSOC largely reflect the **degree of immune cell infiltration and the abundance of fibroblasts**, rather than inherent differences in tumour cells. \
+To determine how these non-malignant cell types might influence tumour growth and prognosis, ST data hold the potential to reconstruct ligand-receptor interactions between stromal, immune and tumour cell populations, resolving the tumor tissue architecture at spatial resolution. \
+
+
+In this hackathon we will analyze data of tumour sample collected during interval debulking surgery from HGSOC patient with a good response to taxane- and platinum-based neoadjuvant chemotherapy (NACT) treatment.
+
+Data were retrieved from [Denisenko, E. et al., Spatial transcriptomics reveals discrete tumour microenvironments and autocrine loops within ovarian cancer subclones. Nat Commun. (2024)](https://doi.org/10.1038/s41467-024-47271-y)
+
+
+```{=html}
+  <hr>
+```
+
+
+# Warming up: setting the environment that you need
+
+Before starting, let's set the stage to be all on the same ground.\
+You have been provided with configuration files. Please select "your" environment and the "helper" functions\
+
+```{r, setting_envir, message=TRUE, highlight=TRUE}
+source('../00_environment.R')
+source("../00_helper_functions.R")
+```
+
+```{=html}
+  <hr>
+```
+
+
+# Loading the packages you need
+
+```{r libraries , message=FALSE}
+source("level_1_libraries.R")
+```
+
+```{=html}
+  <hr>
+```
+
+
+# Loading 10x Visium data of HGSOC slide {.tabset .tabset-fade .tabset-pills}
+
+To create the `SeuratObject` representing the ST data of the sequenced slide we will rely 
+on information stored in the `input` folder. 
+This folder contains `raw counts` and the hematoxylin and eosin (HE) image of the
+tissue slide:\
+
+| What       | Path to                                              |
+|:-----------|:-----------------------------------------------------|
+| raw counts | `../input/10XVisium/`                                |
+| HE image   | `../input/10XVisium/spatial/tissue_lowres_image.png` |
+
+```{=html}
+  <hr>
+```
+
+
+In `raw counts` folder there are three files usually provided by 10x Genomics Visium:\
+
+-   **matrix.mtx:**\
+    Count matrix is usually stored as a sparse format for a more
+    efficient manipulation.\
+    Rows: genes\
+    Columns: barcodes associated to each spot.\
+    \
+-   **features.tsv:**\
+    This file contains specifications of rows included in the count
+    matrix file.\
+    For each feature, the following information are reported:\
+
+     -   first column: `feature ID`, *e.g* gene ID "ENSG00000284733"
+    -   second colum: `feature name`, *e.g* gene name "OR4F29"
+    -   third column: `feature type` which will be one of the following
+        options: \
+          - Gene Expression (this case) \
+          - Antibody Capture \
+          - CRISPR Guide Capture \
+          - Multiplexing Capture \
+          - CUSTOM \
+\
+-   **barcodes.tsv:**\
+    This table contains barcode sequences corresponding to column
+    indices of the matrix file.\
+    Each barcode sequence contains a suffix with a dash separator
+    followed by a number, such as '-1'.\
+
+
+```{=html}
+  <hr>
+```
+
+
+## Question {.unnumbered}
+
+Referring to paths reported in the table above, load 10X Visium data in a `SeuratObject`.\
+A `SeuratObject` is a specialized data structure developed in the [Seurat package](https://github.com/satijalab/seurat), enabling the study of gene expression in the context
+of tissue architecture.\
+This `SeuratObject` is a container that organizes and stores both the
+spot-level expression data along with the associated image of the tissue
+slide.\
+
+Now, create a `SeuratObject` containing spot-level gene expression counts
+and the image of tissue slide; in order:\
+
+1.  Read 10X Genomics Visium count matrix using `Read10X()` function\
+
+
+2.  Create a `SeuratObject` with the count matrix with
+    `CreateSeuratObject()` \
+    
+    
+3.  Read 10X Genomics Visium image through `Read10X_Image()`. \
+    Be careful to include only spots determined to be over tissue.
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+**Questions**\
+
+A) How many spots do you consider in the assay?\
+
+
+B) How many genes are included in the panel?\
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## Answer {.unnumbered}
+
+
+```{r}
+# Your code here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+```{=html}
+  <hr>
+```
+
+
+
+# Test your dataset {.tabset .tabset-fade .tabset-pills}
+
+
+The resulting `sp` object contains in `meta.data` table:
+
+-   `orig.ident`: the identifier of the sample\
+-   `nCount_spatial`: the total number of counts per spot\
+-   `nFeature_spatial`: the number of detected features (genes) per
+    spot\
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+## Question {.unnumbered}
+
+Now, you have to:\
+
+1.  Measure the `percentage of MT` genes of each spot and quantify the
+    `capture efficiency` per spot.\
+    The `capture efficiency` is defined as the ratio of number of
+    expressed genes (`nFeature`) and total counts (`nCount`) per spot.\
+    Add these two annotations in the meta.data table included in
+    your `SeuratObject`.\
+
+2.  Assess the correlation between metrics included in `meta.data`
+    generating a pairsplot.\
+
+3.  Create violin plots resembling QC metrics using `Seurat` function
+    `VlnPlot()`.\
+
+4.  Visualize QC features over the HE image exploiting
+    `SpatialDimPlot()` and `SpatialFeaturePlot()`.\
+
+5.  Remove spots with very few transcript/gene counts.\
+    By applying permissive thresholds, we exclude cells with
+    insufficient gene expression information, which cannot be used for
+    downstream analysis.\
+    In particular, consider these two thresholds:\
+    -   `nFeature_threshold`: compute the 25th percentile of `nFeature`
+    distribution\
+    -   `nCount_threshold`: compute the 25th percentile of `nCount`
+    distribution\
+\
+
+6. Select spots having: \
+    - `nCount` \> `nCount_threshold` \
+    - `nFeature` \> `nFeature_threshold`
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+**Questions** 
+
+A) Inspecting the QCs, how do you evaluate this experiment? \
+
+
+B) How many spots did you retained after applying filtering strategy?\
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## Answer {.unnumbered}
+
+
+```{r}
+# Your code here
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+```{=html}
+  <hr>
+```
+
+
+
+# Identification of cluster of spots {.tabset .tabset-fade .tabset-pills}
+
+
+
+## Question {.unnumbered}
+
+Let's define clusters of spots that share similar transcriptomic
+profiles.
+
+1.   Normalize counts using log-normalization method and find the top
+    2,000 variable features using `FindVariableFeatures()`.
+
+2.   Perform PCA dimensionality reduction computing first 50 PCs and
+    scale data.
+
+3.   Find the 20-nearest neighbors of each spot using the function
+    `FindNeighbors()`.
+
+4.   Identify clusters using `PCA reduction` as reduction for the
+    nearest-neighbor graph construction. Specifically, use the first 30
+    dimensions of PCA as input.\
+
+5.   Visualize the identified clusters over the HE image using
+    `SpatialDimPlot()` function labelling each cluster with the
+    correspondent number.
+
+6.   Visualize the identified clusters over the HE image using `SpatialDimPlot()` function labelling each cluster with the correspondent number.
+
+
+7.  Collect in a list the spot names according to the correspondent cluster using the function `CellsByIdentities()`.\
+    Plot the clusters separately over the HE image specifying in
+    `cells.highlight` parameter the list containing groups of cells per cluster.
+
+
+```{=html}
+  <hr>
+```
+
+
+**Questions**
+
+A.  Which parameter in the function `FindClusters()` impacts the most on the numbers of detected clusters? You can set this parameter equal to 3 and see if you get a larger number of communities.\
+
+B.  How many clusters did you find? \
+
+C.  How many spots did you get in each cluster?
+
+D.  What algorithm did you choose to optimize modularity? Motivate your choice.
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+## Answer {.unnumbered}
+
+
+```{r}
+# Your code here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+
+# Getting the gene signatures {.tabset .tabset-fade .tabset-pills}
+
+
+## Question {.unnumbered}
+
+1.  Use the function `FindAllMarkers()` to get the list of genes that
+    represent each cluster keeping only positive markers (FoldChange (FC) > 0).\
+    In the function, choose proper thresholds for parameters in order to
+    limit testing procedures: \
+
+    -   to genes having at least X-fold difference (log-scale)\
+    -   to consider only genes detected in a minimum fraction of X cells in clusters\
+
+2.  Rank markers per cluster according to the adjusted p-value.
+
+
+3.  Subset in another variable differentially expressed markers having a `log2(fold-change) ≥ 1` and `adjusted p-value ≤ 0.1`.\
+
+
+4.  Visualize espression of top 50 markers per cluster in a heatmap.
+
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+**Questions**
+
+A)   What are the parameters that you set in `FindAllMarkers()`? What statistical test did you choose to identify markers ? 
+
+
+B)   How many positive markers did you identify per cluster? Of those,
+    how many are differentially expressed ?
+
+
+C)   In Seurat adjusted p-values are calculated using what type of multiple testing correction algorithm?
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## Answer {.unnumbered}
+
+
+```{r}
+# Your code here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+```{=html}
+  <hr>
+```
+
+
+
+# Functional analysis on markers {.tabset .tabset-fade .tabset-pills}
+
+Let's identify cancerous and not cancerous cells by annotating markers
+on Hallmarks of cancer and cancer/healthy drivers retrieved from Network
+of Cancer Genes and Healthy Drivers.\
+
+To do so, we will exploit:
+
+-   the involvement of genes in the Hallmarks of Cancer database\
+-   the selective advantage of cancer and healthy drivers genes\
+
+In this phase, consider all positive markers you identified per cluster.
+In this way, you will get a comprehensive view of the genes composing each
+cluster.
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## Question {.unnumbered}
+
+### **Hallmarks of cancer**
+
+
+To investigate Hallmarks of Cancer features :\
+
+
+  1.  Retrieve human Hallmarks gene set from [MSigDB Collections](https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp) using the `msigdbr()` function by specifying the abbreviation category correspondent to Hallmarks collection.\
+
+
+  2.  Perform an enrichment analysis with the `enricher()` function on all positive markers identified for each cluster.\
+    Employ the following cutoffs: `pvalue = 1` and `qvalue = 1`. For multiple testing correction method, use the `Benjamini–Hochberg method`.\
+    Select statistically significant enrichments (FDR \< 0.1).\
+
+
+  3.  Generate a plot visualizing enriched hallmark-related pathways on y-axis, -log10(FDR) on the x-axis and color by cluster identifiers.
+
+
+### **Network of Cancer Genes & Healthy Drivers**
+
+Now:\
+
+1.  Download the manually curated collection of cancer genes and healthy
+    drivers from [Network of Cancer Genes & Healthy Drivers (NCG) portal](http://network-cancer-genes.org/). Alternatively, you can
+    find the already downloaded data in the `input` folder.\
+
+    | What                        | Path to                                                          |
+    |:------------------|:----------------------------------------------------|
+    | Drivers of cancer clone     | `../input/NCG_cancerdrivers_annotation_supporting_evidence.tsv/` |
+    | Drivers of not cancer clone | `../input/NCG_healthydrivers_annotation_supporting_evidence.tsv` |
+
+\
+
+2.  Subset the cancer driver genes primarily associated with ovarian cancer and
+    healthy driver genes associated with the gynecologic organ system.\
+
+
+3.  In the dataframe containing all positive markers for each cluster, add
+    two columns to annotate whether each gene is a cancer driver or 
+    a healty driver according to NCG collection.\
+
+
+4.  Sum up the number of `drivers of cancer clone` and
+    `drivers of not cancer clone` expressed in each spot.\
+    Add these annotations to the meta.data table of your `SeuratObject`.
+    
+    
+5.  Visualize these two newly added features over the HE image of the
+    tissue.
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+### **Questions**
+
+A)  Considering enrichment of clusters in Hallmark pathways, what is the most enriched gene set in each cluster?
+
+      *HINT: you can explore metrics such as RichFactor or GeneRatio.*
+
+
+B)  By inspecting the enriched hallmarks of cancer,
+    can you assign a specific label to each cluster amongts the following list?\
+    - `normal`\
+    - `early tumor onset`\
+    - `late tumor stage`\
+    - `inflammation`\
+    - `DNA damage`\
+
+
+C)  How many cancer genes and healthy genes we are dealing with?
+
+
+D)  Looking at the HE image, are clusters expressing drivers of cancer or not cancer clone
+    clearly separated within the tissue?
+
+
+E)  Based on the expression of cancer drivers, where would you expect to 
+    find cancer lesions in the tissue? Take the HE image of the tissue and
+    draw a box where you expected to localize tumor cells in the tissue.
+
+
+F)  In which Hallmark pathways are the clusters that express cancer driver genes enriched?
+    And in those featured by drivers of not cancer clones?
+
+
+
+```{=html}
+  <hr>
+```
+
+## Answer {.unnumbered}
+
+
+```{r}
+# Your code here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+```{=html}
+  <hr>
+```
+
+
+# Prediction cellular types by unsupervised approach {.tabset .tabset-fade .tabset-pills}
+
+Let's see whether we can strengthen the results by inferring cell
+composition.\
+Cell type prediction can be done using an unsupervised approach based on
+[`clustermole` package](https://igordot.github.io/clustermole/).\
+Clustermole performs cell type prediction based on a set of marker genes
+or on a table of expression values. We will infer cell types from gene
+expression matrix.
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+## Question {.unnumbered}
+
+1)  From SeuratObject retrieve assay data containing normalized counts
+    and transform it into a matrix.\
+
+
+2)  Explore the `clustermole` package to find the function to perform cell
+    type composition inference based on normalized expression counts.\
+    Among available enrichment methods use `ssGSEA`, as it is considered to be
+    one of most accurate methods for gene set enrichment (GSE) analyses
+    *(Lauria A., et al., NAR, 2020)* .\
+
+
+3)  Retrieve the full list of human cell type markers in the clustermole
+    database using `clustermole_markers()`.\
+    Subset the list to include only rows matching the patterns `Human`
+    and `CellMarker` in the `celltype_full` column.\
+    From this selection, further filter markers that meet **at least one**
+    of the following conditions:\
+    - related to `ovary` as organ\
+    - **not** containing one of the following patterns:
+    `|Pluripotent|Pancrea|Hepat|Sertoli|Oligo|Induced|Hematopoietic|Plasma|Mast|Pluripotentstemcell|Platelet|Megakaryocyte|Embr|Neur|Glia|glia|Purkinje|Pyrami|Germ|germ|Follic|neuro|Adventitial`.
+
+
+4)  Subset the cell type enrichments obtained in step 2, keeping only those cell
+    types selected in the previous step.\
+    For each spot, select the most enriched cell type according to the
+    `score_rank.` Now, you can add cell type prediction per spot in the
+    `meta.data` table of your `SeuratObject`.\
+
+
+5)  In the cell type enrichment dataframe add a column that associates 
+    each spot barcode name with its corresponding cluster number ID.
+    Calculate the proportion of each cell type within each cluster.\
+    Generate a barplot plotting on x-axis the different cluster and
+    filled by the proportion of cell types.\
+
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+**Questions**\
+
+
+A)   Considering results in the barplot, which clusters contain an higher fraction of
+    cancer cells?
+
+
+B)   Calculate cell types per cluster and spatially visualize them on the tissue
+    image. Which cell types compose clusters expressing cancer drivers
+    measured in the previous section?
+
+
+C)   Is there any concordance between top expressed markers and inferred cell
+    types per cluster?
+   
+    
+D)   What are the limitations of clustermole in the context of 10X Visium data? 
+
+
+
+```{=html}
+  <hr>
+```
+
+
+## Answer {.unnumbered}
+
+```{r}
+# Your code here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+```{=html}
+  <hr>
+```
+
+
+
+# Identification of ligand receptors (LR) interactions {.tabset .tabset-fade .tabset-pills}
+
+## Question {.unnumbered}
+
+1.  Detect LR interactions of **each cell type** using
+    [LIANA](https://www.nature.com/articles/s41467-022-30755-0).\
+    Specifically, select [natmi](https://github.com/forrest-lab/NATMI), [cell_italk](https://github.com/Coolgenome/iTALK), [call_cellchat](https://github.com/jinworks/CellChat) and [sca](https://github.com/SCA-IRCM/SingleCellSignalR) as methods and [OmniPath](https://github.com/saezlab/OmnipathR) as resource.\
+    Ensure that a minimum of **5** cells per cell type is considered for the analysis.\
+    Include these additional columns in your results: `ligand.expr`,
+    `receptor.expr`, `ligand.pval`, `receptor.pval`, `ligand.FDR`,
+    `receptor.FDR`.\
+
+
+2.  Combine the results and specify the ranking of each interaction
+    according the `aggregate_rank` score.\
+
+
+3.  Explore visualization function provided by LIANA. Highlight LR
+    interactions involving cancer cells.
+    
+    
+4. Assess ligand-receptors interactions among **clusters**. Do you observe concordant results in terms of LR pairs characterizing tumoral clusters?  
+
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+**Questions**
+
+A)  Which are the top-5 ranked LR interactions per cell type?
+
+
+B)  Which are LR interactions involving cancer cells as target? Is there a most recurrent interactor?
+
+
+
+
+```{=html}
+  <hr>
+```
+
+
+
+## Answer {.unnumbered}
+
+
+```{r}
+# Your code here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+```{=html}
+  <hr>
+```
+
+
